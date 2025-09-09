@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generative Art with p5.js</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    let particles = [];
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      for (let i = 0; i < 100; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function draw() {
+      background(0, 5);
+      for (let particle of particles) {
+        particle.update();
+        particle.show();
+        particle.connect(particles);
+      }
+    }
+
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+    }
+
+    class Particle {
+      constructor() {
+        this.pos = createVector(random(width), random(height));
+        this.vel = p5.Vector.random2D();
+        this.size = 5;
+      }
+
+      update() {
+        this.pos.add(this.vel);
+        this.edges();
+      }
+
+      edges() {
+        if (this.pos.x < 0 || this.pos.x > width) {
+          this.vel.x *= -1;
+        }
+        if (this.pos.y < 0 || this.pos.y > height) {
+          this.vel.y *= -1;
+        }
+      }
+
+      show() {
+        noStroke();
+        fill(255, 200, 0);
+        ellipse(this.pos.x, this.pos.y, this.size);
+      }
+
+      connect(particles) {
+        for (let other of particles) {
+          if (other !== this) {
+            let d = dist(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
+            if (d < 100) {
+              let from = color(255, 0, 0);
+              let to = color(255, 165, 0);
+              let inter = lerpColor(from, to, map(d, 0, 100, 0, 1));
+              stroke(inter, 50);
+              line(this.pos.x, this.pos.y, other.pos.x, other.pos.y);
+            }
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>
