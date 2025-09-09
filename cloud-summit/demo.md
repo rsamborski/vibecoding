@@ -22,12 +22,14 @@
 ```
 Create a single, full-screen HTML file containing a generative art piece using p5.js. The animation should be a dynamic, colorful, and continuously evolving geometric pattern that covers the entire browser window and resizes appropriately.
 ```
-    1. Update colors, example:
 
+
+    1. Update colors, example:
 
 ```
 Update @index.html to change colors to red and orange.
 ```
+
 
     1. Spec to app from diagram
 
@@ -57,6 +59,7 @@ Memory:
 ```
 Generate a logo for this project that matches its spirit. Its purpose is to help users plan their day. Save it in a folder accessible by the frontend app. The logo should have a maximum size of 100px x 50px.
 ```
+
 
     1. (if not added automatically) Add the logo to the newly created application frontend
 
