@@ -40,7 +40,7 @@ Each item/news article should have following properties:
  - text
  - author
 
-The UI should present a nicely formatted list of news, one under another with vertical scrolling. Use CSS to add distinct colors and make sure that the background is different between odd and even news items.
+The UI should present a nicely formatted list of news, one under another with vertical scrolling.
 
 After creating the application, propagate the database with 10-15 sample news and start the backend service and connect the frontend to it, so I can test it from my browser.
 ```
@@ -55,7 +55,11 @@ Memory:
     1. Generate an image (?)
 
 ```
-Generate a logo for this project that matches its spirit. Its purpose is to help users plan their day. Save it in img/logo.png file.
+Generate a logo for this project that matches its spirit. Its purpose is to help users plan their day. Save it in a folder accessible by the frontend app. The logo should have a maximum size of 100px x 50px.
 ```
 
-    1. Add the logo to the newly created application frontend
+    1. (if not added automatically) Add the logo to the newly created application frontend
+
+```
+Update the frontend application to show the newly generated logo at the top.
+```

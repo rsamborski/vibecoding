@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from 'react';
 
-interface NewsItem {
+interface Article {
   id: number;
   date: string;
   text: string;
@@ -10,69 +10,37 @@ interface NewsItem {
 }
 
 export default function Home() {
-  const [news, setNews] = useState<NewsItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const response = await fetch('http://localhost:5001/api/news');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        setNews(data);
-      } catch (error) {
-        if (error instanceof Error) {
-          setError(error.message);
-        } else {
-          setError('An unknown error occurred');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNews();
+    fetch('http://127.0.0.1:5001/api/news')
+      .then((res) => res.json())
+      .then((data) => {
+        setArticles(data);
+      });
   }, []);
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <div className="container mx-auto p-8">
-        <header className="text-center mb-12">
-          <h1 className="text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
-            Latest News
-          </h1>
-          <p className="mt-2 text-lg text-gray-400">Your daily dose of updates</p>
-        </header>
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
+        <img src="/imagen-imagen-3.0-generate-002-20250909-183923-0.png" alt="News Feed Logo" className="max-w-[200px] max-h-[150px]" />
+        <h1 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">News Feed</h1>
+      </div>
 
-        <div className="max-w-3xl mx-auto">
-          {loading && <p className="text-center text-gray-400">Loading news...</p>}
-          {error && <p className="text-center text-red-400">Error: {error}</p>}
-          {!loading && !error && (
-            <div className="space-y-6">
-              {news.map((item, index) => {
-                const bgColor = index % 2 === 0 ? 'bg-gray-800 bg-opacity-50' : 'bg-blue-900 bg-opacity-50';
-                return (
-                  <div
-                    key={item.id}
-                    className={`border border-gray-700 rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 ${bgColor}`}
-                  >
-                    <div className="p-6">
-                      <div className="flex justify-between items-center mb-4">
-                        <p className="text-sm text-gray-400">{new Date(item.date).toLocaleDateString()}</p>
-                        <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider">By {item.author}</p>
-                      </div>
-                      <p className="text-xl font-medium text-gray-100">{item.text}</p>
-                    </div>
-                    {index < news.length - 1 && <hr className="border-gray-700" />}
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+      <div className="mt-12 w-full max-w-5xl">
+        {articles.map((article, index) => (
+          <div
+            key={article.id}
+            className={`p-4 my-4 rounded-lg ${
+              index % 2 === 0 ? 'bg-red-900' : 'bg-blue-900'
+            }`}
+          >
+            <p className="text-lg text-white">{article.text}</p>
+            <p className="text-sm text-white mt-2">
+              By {article.author} on {new Date(article.date).toLocaleDateString()}
+            </p>
+          </div>
+        ))}
       </div>
     </main>
   );
