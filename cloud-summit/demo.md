@@ -14,7 +14,7 @@
         * ! ls
             * ! cat README.md
     * Memory
-        * /memory add With every new feature update the [README.md](README.md) file to describe what it does. Don’t remove existing parts of the file such as the main title or author.
+        * /memory add When running Python code always use venv 
     * [Gemini.md](Gemini.md) + hierarchy
 
 2. Vibe coding
@@ -48,9 +48,15 @@ The UI should present a nicely formatted list of news, one under another with ve
 After creating the application, propagate the database with 10-15 sample news and start the backend service and connect the frontend to it, so I can test it from my browser.
 ```
 
-* Memory:
+It takes time to generate, so show an app prepared earlier by Gemini:
 ```
-- When running Python code always use venv
+# Shell 1
+cd complete/backend
+venv/bin/python3 app.py 
+
+# Shell 2
+cd complete/frontend
+npm run dev
 ```
 
 3. MCP
