@@ -35,7 +35,7 @@ Update @index.html to change colors to red and orange.
 * Spec to app from diagram
 
 ```
-Create a simple 3-tier newsfeed application based on the cloud-summit-demo.png diagram. Technical stack details are presented on the diagram.
+Create a simple 3-tier newsfeed application based on the @cloud-summit-demo.png diagram. Technical stack details are presented on the diagram.
 
 Each item/news article should have following properties:
  - id
