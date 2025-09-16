@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generative Art</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let t = 0;
+
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        background(0);
+        strokeWeight(2);
+        noFill();
+      }
+
+      function draw() {
+        background(0, 5); // Semi-transparent background for fading effect
+
+        translate(width / 2, height / 2);
+
+        for (let i = 0; i < 200; i++) {
+          stroke(lerpColor(color('#ff0000'), color('#ffa500'), (i + frameCount) % 200 / 200));
+          beginShape();
+          for (let j = 0; j < TWO_PI; j += PI / 10) {
+            let x = (100 + 50 * sin(t + i * 0.1)) * cos(j);
+            let y = (100 + 50 * sin(t + i * 0.1)) * sin(j);
+            let z = 20 * sin(t + i * 0.05);
+            vertex(x + z, y + z);
+          }
+          endShape(CLOSE);
+        }
+
+        t += 0.01;
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+    </script>
+  </body>
+</html>
