@@ -24,7 +24,7 @@ export default function Home() {
         <div className="flex justify-center mb-4">
           <img src="/logo.png" alt="Logo" width="100" height="50" />
         </div>
-        <h1 className="text-4xl font-bold text-center mb-8">Newsfeed</h1>
+        <h1 className="text-4xl font-bold text-center mb-8 text-black">Newsfeed</h1>
         <div className="space-y-4">
           {news.map((item) => (
             <div key={item.id} className="bg-white p-6 rounded-lg shadow-md">
