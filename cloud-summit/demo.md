@@ -65,7 +65,7 @@ npm run dev
 * Generate an image (?)
 
 ```
-Generate a logo for this project that matches its spirit. Its purpose is to help users plan their day. Save it in a folder accessible by the frontend app. The logo should have a maximum size of 100px x 50px.
+Generate a logo for this project that matches its spirit. Its aspiring to be a main source of news for its users. Save it in a folder accessible by the frontend app. The logo should have a maximum height of 50px.
 ```
 
 * (if not added automatically) Add the logo to the newly created application frontend
