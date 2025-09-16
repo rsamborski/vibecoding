@@ -51,8 +51,8 @@ After creating the application, propagate the database with 10-15 sample news an
 It takes time to generate, so show an app prepared earlier by Gemini:
 ```
 # Shell 1
-cd complete/backend
-venv/bin/python3 app.py 
+cd complete
+venv/bin/python3 backend/app.py 
 
 # Shell 2
 cd complete/frontend
@@ -72,4 +72,10 @@ Generate a logo for this project that matches its spirit. Its purpose is to help
 
 ```
 Update the frontend application to show the newly generated logo at the top.
+```
+
+4. README
+
+```
+Update @README.md to reflect the newly added features.
 ```
