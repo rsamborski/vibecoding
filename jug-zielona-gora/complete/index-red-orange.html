@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generative Art with p5.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #000;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      let t = 0;
+
+      function setup() {
+        createCanvas(windowWidth, windowHeight);
+        background(0);
+        strokeWeight(1);
+        noFill();
+      }
+
+      function draw() {
+        background(0, 5); // Semi-transparent background for fading effect
+
+        translate(width / 2, height / 2);
+
+        for (let i = 0; i < 10; i++) {
+          let angle1 = noise(t + i * 10) * TWO_PI * 2;
+          let angle2 = noise(t + i * 20) * TWO_PI * 2;
+
+          let x1 = (width / 3) * cos(angle1);
+          let y1 = (height / 3) * sin(angle1);
+          let x2 = (width / 3) * cos(angle2);
+          let y2 = (height / 3) * sin(angle2);
+
+          let r = map(sin(t + i), -1, 1, 200, 255);
+          let g = map(cos(t + i), -1, 1, 50, 150);
+          let b = map(sin(t + i * 0.5), -1, 1, 0, 50);
+
+          stroke(r, g, b, 150);
+          line(x1, y1, x2, y2);
+        }
+
+        t += 0.003;
+      }
+
+      function windowResized() {
+        resizeCanvas(windowWidth, windowHeight);
+      }
+    </script>
+  </body>
+</html>
