@@ -949,7 +949,14 @@ Tools extend an agent's abilities beyond text generation.
 
 4.  **OpenAPI & Protocol Tools**: For interacting with APIs and services.
     *   **`OpenAPIToolset`**: Automatically generates a set of `RestApiTool`s from an OpenAPI (Swagger) v3 specification.
-    *   **`MCPToolset`**: Connects to an external Model Context Protocol (MCP) server to dynamically load its tools.
+    *   **`MCPToolset`**: Connects to an external Model Context Protocol (MCP) server to dynamically load its tools. Example of using a remotely deployed MCP server:
+    ```python
+    mcp_tools = MCPToolset(
+            connection_params=StreamableHTTPConnectionParams(
+                url=mcp_server_url,
+            ),
+        )
+    ```
 
 5.  **Google Cloud Tools**: For deep integration with Google Cloud services.
     *   **`ApiHubToolset`**: Turns any documented API from Apigee API Hub into a tool.
