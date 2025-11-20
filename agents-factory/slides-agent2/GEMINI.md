@@ -951,6 +951,8 @@ Tools extend an agent's abilities beyond text generation.
     *   **`OpenAPIToolset`**: Automatically generates a set of `RestApiTool`s from an OpenAPI (Swagger) v3 specification.
     *   **`MCPToolset`**: Connects to an external Model Context Protocol (MCP) server to dynamically load its tools. Example of using a remotely deployed MCP server:
     ```python
+    from google.adk.tools.mcp_tool.mcp_toolset import McpToolset, StreamableHTTPConnectionParams
+
     mcp_tools = MCPToolset(
             connection_params=StreamableHTTPConnectionParams(
                 url=mcp_server_url,
