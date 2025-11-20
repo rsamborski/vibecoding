@@ -19,51 +19,47 @@ from zoneinfo import ZoneInfo
 import google.auth
 from google.adk.agents import Agent
 from google.adk.apps.app import App
+from google.adk.tools.mcp_tool.mcp_toolset import McpToolset, StreamableHTTPConnectionParams
 
 _, project_id = google.auth.default()
 os.environ.setdefault("GOOGLE_CLOUD_PROJECT", project_id)
 os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "global")
 os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "True")
 
-
-def get_weather(query: str) -> str:
-    """Simulates a web search. Use it get information on weather.
-
-    Args:
-        query: A string containing the location to get weather information for.
-
-    Returns:
-        A string with the simulated weather information for the queried location.
-    """
-    if "sf" in query.lower() or "san francisco" in query.lower():
-        return "It's 60 degrees and foggy."
-    return "It's 90 degrees and sunny."
-
-
-def get_current_time(query: str) -> str:
-    """Simulates getting the current time for a city.
-
-    Args:
-        city: The name of the city to get the current time for.
-
-    Returns:
-        A string with the current time information.
-    """
-    if "sf" in query.lower() or "san francisco" in query.lower():
-        tz_identifier = "America/Los_Angeles"
-    else:
-        return f"Sorry, I don't have timezone information for query: {query}."
-
-    tz = ZoneInfo(tz_identifier)
-    now = datetime.datetime.now(tz)
-    return f"The current time for query {query} is {now.strftime('%Y-%m-%d %H:%M:%S %Z%z')}"
-
+# MCP Server Configuration
+mcp_server_url = "https://media-mcp-830831902266.us-central1.run.app/mcp"
+mcp_tools = McpToolset(
+    connection_params=StreamableHTTPConnectionParams(
+        url=mcp_server_url,
+    ),
+)
 
 root_agent = Agent(
-    name="root_agent",
+    name="slide_generator_agent",
     model="gemini-2.5-flash",
-    instruction="You are a helpful AI assistant designed to provide accurate and useful information.",
-    tools=[get_weather, get_current_time],
+    instruction="""
+    You are a professional presentation designer and visual storyteller. Your goal is to create a stunning, high-quality 5-slide presentation based on the user's idea.
+
+    Follow this strict process:
+
+    1.  **Analyze and Plan**: Understand the user's idea and outline a compelling 5-slide narrative structure.
+    2.  **Define Style**: Establish a consistent visual style (e.g., "Minimalist, corporate blue and white, flat icons, sans-serif typography" or "Vibrant, futuristic neon, 3D isometric illustrations"). This style string MUST be appended to every image generation prompt to ensure consistency.
+    3.  **Generate Slides**: For EACH of the 5 slides, iteratively perform the following:
+        a.  **Draft Prompt**: Create a highly detailed image generation prompt. The prompt must describe:
+            *   The slide layout (e.g., "Title slide with centered text", "Split screen with bullet points on left and chart on right").
+            *   The specific text content (headlines, key points).
+            *   Visual elements (infographics, icons, background images).
+            *   The defined **Style**.
+        b.  **Refine Prompt**: Critically review the prompt. Is it detailed enough? Does it explicitly mention the text to appear on the slide? Does it enforce the style? Improve the prompt to ensure high quality.
+        c.  **Generate Image**: Use the available tool from the MCP server to generate the image using the refined prompt.
+    4.  **Final Output**: Once all 5 slides are generated, present the user with a numbered list of the slides, each with its description and the URL to the generated image.
+
+    **Constraints**:
+    *   Create exactly 5 slides.
+    *   Ensure strict visual consistency across all slides.
+    *   The slides must be detailed and include text and graphics as if they were real presentation slides.
+    """,
+    tools=[mcp_tools],
 )
 
 app = App(root_agent=root_agent, name="app")
