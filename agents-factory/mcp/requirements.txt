@@ -1,0 +1,6 @@
+# google-adk==1.17.*
+# google-cloud-aiplatform==1.125.*
+google-cloud-storage
+google-genai==1.52.*
+httpx==0.28.*
+fastmcp==2.13.*
