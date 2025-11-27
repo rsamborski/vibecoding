@@ -15,21 +15,19 @@
 
 set -e
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd "${SCRIPT_DIR}/.."
-
 source ".env"
 
 echo "Deploying MCP Server to Cloud Run..."
 MCP_SERVICE_NAME="media-mcp"
 
 gcloud run deploy "${MCP_SERVICE_NAME}" \
-  --source mcp \
+  --source . \
   --project "${GOOGLE_CLOUD_PROJECT}" \
-  --region "${GOOGLE_CLOUD_LOCATION}" \
+  --region "${GOOGLE_CLOUD_RUN_LOCATION}" \
   --no-allow-unauthenticated \
   --clear-base-image \
   --set-env-vars GOOGLE_GENAI_USE_VERTEXAI="${GOOGLE_GENAI_USE_VERTEXAI}" \
   --set-env-vars GOOGLE_CLOUD_PROJECT="${GOOGLE_CLOUD_PROJECT}" \
   --set-env-vars GOOGLE_CLOUD_LOCATION="${GOOGLE_CLOUD_LOCATION}" \
+  --set-env-vars GOOGLE_CLOUD_RUN_LOCATION="${GOOGLE_CLOUD_RUN_LOCATION}" \
   --set-env-vars AI_ASSETS_BUCKET="${AI_ASSETS_BUCKET}"
