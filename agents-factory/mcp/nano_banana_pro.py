@@ -67,7 +67,7 @@ async def generate_image(
     asset = MediaAsset(uri="")
     for _ in range (0, MAX_RETRIES):
         response = genai_client.models.generate_content(
-            model="gemini-3-pro-image",
+            model="gemini-3-pro-image-preview",
             contents=[content],
             config=types.GenerateContentConfig(
                 response_modalities=["IMAGE"],
@@ -100,7 +100,8 @@ async def generate_image(
     if not asset.uri:
         asset.error = "No image was generated."
     else:
+        asset.uri = asset.uri.replace('gs://', AUTHORIZED_URI)
         logging.info(
-            f"Image URL: {asset.uri.replace('gs://', AUTHORIZED_URI)}"
-        )
-    return asset.uri.replace('gs://', AUTHORIZED_URI)
+            f"Image URL: {asset.uri}"
+        )   
+    return asset
