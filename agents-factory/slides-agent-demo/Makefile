@@ -38,7 +38,7 @@ local-backend:
 # Usage: make deploy [IAP=true] [PORT=8080] - Set IAP=true to enable Identity-Aware Proxy, PORT to specify container port
 deploy:
 	PROJECT_ID=$$(gcloud config get-value project) && \
-	gcloud beta run deploy slides-agent2 \
+	gcloud beta run deploy slides-agent-demo \
 		--source . \
 		--memory "4Gi" \
 		--project $$PROJECT_ID \
@@ -47,7 +47,7 @@ deploy:
 		--no-cpu-throttling \
 		--labels "created-by=adk" \
 		--update-build-env-vars "AGENT_VERSION=$(shell awk -F'"' '/^version = / {print $$2}' pyproject.toml || echo '0.0.0')" \
-		--set-env-vars \
+		--update-env-vars \
 		"COMMIT_SHA=$(shell git rev-parse HEAD)" \
 		$(if $(IAP),--iap) \
 		$(if $(PORT),--port=$(PORT))

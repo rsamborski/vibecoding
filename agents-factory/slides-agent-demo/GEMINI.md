@@ -234,7 +234,7 @@ Agent Config agents can be deployed using:
 *   **Model Support**: Only Gemini models currently supported
 *   **Language Support**: Custom tools must be written in Python
 *   **Unsupported Agent Types**: `LangGraphAgent`, `A2aAgent`
-*   **Unsupported Tools**: `AgentTool`, `LongRunningFunctionTool`, `VertexAiSearchTool`, `LangchainTool`, `ExampleTool`
+*   **Unsupported Tools**: `AgentTool`, `LongRunningFunctionTool`, `VertexAiSearchTool`, `MCPToolset`, `LangchainTool`, `ExampleTool`
 
 For complete examples and reference, see the [ADK samples repository](https://github.com/search?q=repo%3Agoogle%2Fadk-python+path%3A%2F%5Econtributing%5C%2Fsamples%5C%2F%2F+.yaml&type=code).
 
@@ -258,7 +258,7 @@ def get_current_time(city: str) -> dict:
 
 my_first_llm_agent = Agent(
     name="time_teller_agent",
-    model="gemini-2.5-flash", # Essential: The LLM powering the agent
+    model="gemini-3-pro-preview", # Essential: The LLM powering the agent
     instruction="You are a helpful assistant that tells the current time in cities. Use the 'get_current_time' tool for this purpose.",
     description="Tells the current time in a specified city.", # Crucial for multi-agent delegation
     tools=[get_current_time] # List of callable functions/tool instances
@@ -358,7 +358,7 @@ This is the most reliable way to make an LLM produce predictable, parseable JSON
         from google.genai.types import ThinkingConfig
 
         agent = Agent(
-            model="gemini-2.5-flash",
+            model="gemini-3-pro-preview",
             planner=BuiltInPlanner(
                 thinking_config=ThinkingConfig(include_thoughts=True)
             ),
@@ -373,7 +373,7 @@ This is the most reliable way to make an LLM produce predictable, parseable JSON
         from google.adk.code_executors import BuiltInCodeExecutor
         agent = Agent(
             name="code_agent",
-            model="gemini-2.5-flash",
+            model="gemini-3-pro-preview",
             instruction="Write and execute Python code to solve math problems.",
             code_executor=BuiltInCodeExecutor() # Corrected from a list to an instance
         )
@@ -401,7 +401,7 @@ from google.adk.tools import google_search
 
 
 plan_generator = LlmAgent(
-    model="gemini-2.5-flash",
+    model="gemini-3-pro-preview",
     name="plan_generator",
     description="Generates a 4-5 line action-oriented research plan.",
     instruction=f"""
@@ -493,7 +493,7 @@ from google.adk.agents import SequentialAgent, Agent
 # Agent 1: Summarizes a document and saves to state
 summarizer = Agent(
     name="DocumentSummarizer",
-    model="gemini-2.5-flash",
+    model="gemini-3-pro-preview",
     instruction="Summarize the provided document in 3 sentences.",
     output_key="document_summary" # Output saved to session.state['document_summary']
 )
@@ -501,7 +501,7 @@ summarizer = Agent(
 # Agent 2: Generates questions based on the summary from state
 question_generator = Agent(
     name="QuestionGenerator",
-    model="gemini-2.5-flash",
+    model="gemini-3-pro-preview",
     instruction="Generate 3 comprehension questions based on this summary: {document_summary}",
     # 'document_summary' is dynamically injected from session.state
 )
@@ -528,7 +528,7 @@ fetch_social_sentiment = Agent(name="SentimentAnalyzer", ..., output_key="sentim
 # Agent to merge results (runs after ParallelAgent, usually in a SequentialAgent)
 merger_agent = Agent(
     name="ReportGenerator",
-    model="gemini-2.5-flash",
+    model="gemini-3-pro-preview",
     instruction="Combine stock data: {stock_data}, news: {news_data}, and sentiment: {sentiment_data} into a market report."
 )
 
@@ -696,7 +696,7 @@ research_pipeline = SequentialAgent(
 # The top-level agent that interacts with the user.
 interactive_planner_agent = LlmAgent(
     name="interactive_planner_agent",
-    model="gemini-2.5-flash",
+    model="gemini-3-pro-preview",
     description="The primary research assistant. It collaborates with the user to create a research plan, and then executes it upon approval.",
     instruction="""
     You are a research planning assistant. Your workflow is:
@@ -813,12 +813,12 @@ ADK's model flexibility allows integrating various LLMs for different needs.
 *   **AI Studio (Easy Start)**:
     *   Set `GOOGLE_API_KEY="YOUR_API_KEY"` (environment variable).
     *   Set `GOOGLE_GENAI_USE_VERTEXAI="False"`.
-    *   Model strings: `"gemini-2.5-flash"`, `"gemini-2.5-pro"`, etc.
+    *   Model strings: `"gemini-3-pro-preview"`, `"gemini-2.5-pro"`, etc.
 *   **Vertex AI (Production)**:
     *   Authenticate via `gcloud auth application-default login` (recommended).
     *   Set `GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_ID"`, `GOOGLE_CLOUD_LOCATION="your-region"` (environment variables).
     *   Set `GOOGLE_GENAI_USE_VERTEXAI="True"`.
-    *   Model strings: `"gemini-2.5-flash"`, `"gemini-2.5-pro"`, or full Vertex AI endpoint resource names for specific deployments.
+    *   Model strings: `"gemini-3-pro-preview"`, `"gemini-2.5-pro"`, or full Vertex AI endpoint resource names for specific deployments.
 
 ### 6.2 Other Cloud & Proprietary Models via LiteLLM
 
@@ -949,16 +949,7 @@ Tools extend an agent's abilities beyond text generation.
 
 4.  **OpenAPI & Protocol Tools**: For interacting with APIs and services.
     *   **`OpenAPIToolset`**: Automatically generates a set of `RestApiTool`s from an OpenAPI (Swagger) v3 specification.
-    *   **`MCPToolset`**: Connects to an external Model Context Protocol (MCP) server to dynamically load its tools. Example of using a remotely deployed MCP server:
-    ```python
-    from google.adk.tools.mcp_tool.mcp_toolset import McpToolset, StreamableHTTPConnectionParams
-
-    mcp_tools = MCPToolset(
-            connection_params=StreamableHTTPConnectionParams(
-                url=mcp_server_url,
-            ),
-        )
-    ```
+    *   **`MCPToolset`**: Connects to an external Model Context Protocol (MCP) server to dynamically load its tools.
 
 5.  **Google Cloud Tools**: For deep integration with Google Cloud services.
     *   **`ApiHubToolset`**: Turns any documented API from Apigee API Hub into a tool.
@@ -1955,7 +1946,7 @@ Before finalizing any `new_string` for a `replace` operation, meticulously verif
     ```python
     root_agent = Agent(
         name="root_agent",
-        model="gemini-2.5-flash",
+        model="gemini-3-pro-preview",
         instruction="You are a helpful AI assistant."
     )
     ```
@@ -1971,7 +1962,7 @@ Before finalizing any `new_string` for a `replace` operation, meticulously verif
     ```python
     root_agent = Agent(
         name="recipe_suggester", # OK, related to new purpose
-        model="gemini-2.5-flash", # MUST be preserved
+        model="gemini-3-pro-preview", # MUST be preserved
         instruction="You are a recipe suggester." # OK, the direct target
     )
     ```
@@ -1989,7 +1980,7 @@ Before finalizing any `new_string` for a `replace` operation, meticulously verif
     *   **Avoid `make playground`** unless specifically instructed; it is designed for human interaction. Focus on programmatic testing.
 
 *   **Model Selection:**
-    *   **When using Gemini, prefer the 2.5 model family** for optimal performance and capabilities: "gemini-2.5-pro" and "gemini-2.5-flash"
+    *   **When using Gemini, prefer modern model families** for optimal performance and capabilities: "gemini-2.5-pro", "gemini-2.5-flash", and "gemini-3-pro-preview"
 
 *   **Running Python Commands:**
     *   Always use `uv` to execute Python commands within this repository (e.g., `uv run run_agent.py`).

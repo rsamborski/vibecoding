@@ -20,7 +20,7 @@ steps:
     args:
       - "run"
       - "deploy"
-      - "slides-agent2"
+      - "slides-agent-demo"
       - "--image"
       - "$_REGION-docker.pkg.dev/$PROJECT_ID/$_ARTIFACT_REGISTRY_REPO_NAME/$_CONTAINER_NAME"
       - "--region"
@@ -32,7 +32,7 @@ substitutions:
   _PROD_PROJECT_ID: YOUR_PROD_PROJECT_ID
   _REGION: us-central1
 
-logsBucket: gs://${PROJECT_ID}-slides-agent2-logs/build-logs
+logsBucket: gs://${PROJECT_ID}-slides-agent-demo-logs/build-logs
 options:
   substitutionOption: ALLOW_LOOSE
   defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
