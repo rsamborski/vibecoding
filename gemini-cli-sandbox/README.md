@@ -6,64 +6,60 @@ gcloud iam service-accounts create gemini-cli-sa-rsamborski-rag --description="I
 
 gcloud projects add-iam-policy-binding rsamborski-rag --member="serviceAccount:gemini-cli-sa-rsamborski-rag@rsamborski-rag.iam.gserviceaccount.com" --role="roles/alloydb.admin" --role="roles/aiplatform.user" --role="roles/run.admin" --role="roles/bigquery.dataViewer" --role="roles/bigquery.jobUser"
 
-
-
 # Copy the Dockerfile
-cp sandbox.Dockerfile ~/.gemini/sandbox.Dockerfile
-```
-
-
-Add following to `.gemini/settings.json:`:
-```
-{
-  "tools": {
-    "sandbox": "docker"
-  }
-}
+cp sandbox.Dockerfile .gemini/sandbox.Dockerfile
 ```
 
 Start with:
 ```
 # Export the necessary environment variables
 export GITHUB_TOKEN="github_pat_..."
-export GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/sa-key.json"
-export CLOUDSDK_CORE_PROJECT="YOUR_PROJECT_ID"
 export GEMINI_API_KEY="your-api-key"
+export CLOUDSDK_CORE_PROJECT="YOUR_PROJECT_ID"
 export GEMINI_SANDBOX=docker
-export BUILD_SANDBOX=1  # makes sure we build image first
+
+# We keep the ENV variables for our dynamic credentials
+export SANDBOX_FLAGS="\
+-e GITHUB_TOKEN=${GITHUB_TOKEN} \
+-e CLOUDSDK_CORE_PROJECT=${CLOUDSDK_CORE_PROJECT} \
+-e CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=$(pwd)/sa-key.json"
 
 # Launch the interactive Gemini CLI
 # It will use the .gemini/sandbox.Dockerfile to build and spin up the isolated micro-environment
-gemini
+BUILD_SANDBOX=1 gemini
 ```
 
 
 To fix issues when running in brew, built the image manually by following:
 
 ```
-# Install buildx
-brew install docker-buildx
+# Install dependencie
+brew install docker colima docker-buildx
 
+# Configure docker-buildx
 mkdir -p ~/.docker/cli-plugins
 ln -sfn $(brew --prefix)/opt/docker-buildx/bin/docker-buildx ~/.docker/cli-plugins/docker-buildx
 
-docker buildx version
+# Start colima service
+brew services start colima
 
-# 1. Get the base name the CLI looks for
+# Update DOCKER_HOST (you might want to add this line to .bash_profile):
+export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+
+# Get the base name the CLI looks for
 export IMAGE_BASE_NAME="us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox"
 
-# 2. Get your currently installed Gemini CLI version (e.g., 0.32.1)
+# Get your currently installed Gemini CLI version (e.g., 0.32.1)
 export IMAGE_TAG=$(gemini --version)
 
-# 3. Combine them
+# Combine them
 export IMAGE_NAME="${IMAGE_BASE_NAME}:${IMAGE_TAG}"
 
-# 4. Build your custom sandbox image
+# Build your custom sandbox image
 docker build -t "${IMAGE_NAME}" -f sandbox.Dockerfile .
 ```
 
 Then we can run without BUILD_SANDBOX=1:
 ```
-unset BUILD_SANDBOX
 gemini
 ```

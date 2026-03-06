@@ -1,5 +1,7 @@
-# Start from the official Gemini CLI sandbox image
-FROM us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.32.1
+# Start from the official Gemini CLI sandbox image with proper version
+ARG GEMINI_CLI_VERSION=0.32.1
+FROM us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:${GEMINI_CLI_VERSION}
+#FROM gemini-cli-sandbox
 
 # Switch to root to install system dependencies (gcloud)
 USER root
@@ -14,5 +16,4 @@ RUN apt-get update && apt-get install -y curl apt-transport-https ca-certificate
 USER node
 WORKDIR /workspace
 
-# Configure Git to use the injected GitHub PAT
-RUN git config --global url."https://api:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
+RUN git config --global credential.helper '!f() { echo "username=x-access-token"; echo "password=$GITHUB_TOKEN"; }; f'
