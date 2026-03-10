@@ -12,6 +12,15 @@ RUN apt-get update && apt-get install -y curl apt-transport-https ca-certificate
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - && \
     apt-get update && apt-get install -y google-cloud-cli
 
+# Install Terraform
+RUN apt-get update && apt-get install -y wget lsb-release && \
+    wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg > /dev/null && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list && \
+    apt-get update && apt-get install -y terraform
+
+# Install vim
+RUN apt-get install -y vim
+
 # Switch back to the non-root user (the official sandbox image uses 'node' as the default user)
 USER node
 WORKDIR /workspace
