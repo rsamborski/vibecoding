@@ -1,5 +1,5 @@
 # Start from the official Gemini CLI sandbox image with proper version
-ARG GEMINI_CLI_VERSION=0.32.1
+ARG GEMINI_CLI_VERSION
 FROM us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:${GEMINI_CLI_VERSION}
 #FROM gemini-cli-sandbox
 
