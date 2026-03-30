@@ -1,4 +1,10 @@
-Commands:
+# Gemini CLI Custom Sandbox
+
+This project provides a custom Docker-based sandbox environment for Gemini CLI, pre-configured with `gcloud`, Terraform, and Git.
+
+For more background on securing Gemini CLI for cloud development, see this article: [Secure Gemini CLI for Cloud Development](https://medium.com/google-cloud/secure-gemini-cli-for-cloud-development-488b23dedf29)
+
+## Commands
 
 ```
 # Set IAM account for gcloud
