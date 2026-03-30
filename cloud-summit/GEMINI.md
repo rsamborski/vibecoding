@@ -1,1 +1,0 @@
-- DO NOT restart the frontend server to apply the changes to the code.
