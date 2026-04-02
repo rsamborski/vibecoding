@@ -1,5 +1,5 @@
 # Start from the official Gemini CLI sandbox image with proper version
-ARG GEMINI_CLI_VERSION
+ARG GEMINI_CLI_VERSION=0.36.0
 FROM us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:${GEMINI_CLI_VERSION}
 #FROM gemini-cli-sandbox
 
@@ -20,6 +20,9 @@ RUN apt-get update && apt-get install -y wget lsb-release && \
 
 # Install vim
 RUN apt-get install -y vim
+
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Switch back to the non-root user (the official sandbox image uses 'node' as the default user)
 USER node
