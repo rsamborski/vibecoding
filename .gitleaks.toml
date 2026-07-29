@@ -1,0 +1,9 @@
+# Gitleaks security scan configuration
+title = "Gitleaks config"
+
+[allowlist]
+description = "Global allowlist"
+paths = [
+    '''\.env\.example$''',
+    '''README\.md$'''
+]

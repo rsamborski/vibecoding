@@ -137,6 +137,8 @@ celerybeat.pid
 # Environments
 .env
 .envrc
+.env.*
+!.env.example
 .venv
 env/
 venv/
@@ -227,3 +229,12 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+
+# Secrets
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+token.json
+secrets.json
