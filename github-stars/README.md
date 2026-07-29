@@ -6,17 +6,18 @@ A lightweight Python tool that dynamically samples star history from the GitHub 
 
 ## Key Features
 
+- **Whiteboard / Visual Thinking Style**: Designed in hand-drawn whiteboard marker sketch style following Developer Relations social image guidelines (clean white background, sketchy charcoal strokes, vibrant blue marker curve, and warm amber star badge).
 - **Smart Adaptive Sampling**: Instead of fetching every stargazer page (which causes rate limits on large repos), the script dynamically calculates an optimal sampling interval (e.g. daily, weekly, or monthly) based on the repository's age.
 - **Fast Parallel Fetching**: Uses `ThreadPoolExecutor` to fetch sampled pages concurrently in ~1-2 seconds with only ~15–40 total API requests.
-- **Environment Token Authentication**: Checks `GITHUB_TOKEN`, `GH_TOKEN`, `GITHUB_CLASSIC_TOKEN`, or `PAT_TOKEN` environment variables. Uses standard `Bearer` authorization headers.
-- **Modern Dark Theme Aesthetic**: Styled with a dark midnight background (`#0B0F19`), glowing cyan line (`#38BDF8`), translucent area fill, star badge, and formatted date/star tick labels.
+- **Environment Token Authentication**: Checks `GITHUB_TOKEN`, `GH_TOKEN`, `GITHUB_CLASSIC_TOKEN`, or `PAT_TOKEN` environment variables.
+- **Themes & Demo Mode**: Supports `--theme whiteboard` (default) and `--theme dark`, as well as `--demo` mode for instant offline graph generation without API calls.
 - **PEP 723 Support**: Run directly via `uv run` with zero manual dependency setup.
 
 ## Usage
 
-### 1. Set your GitHub Token (Optional but Recommended)
+### 1. Set your GitHub Token (Recommended)
 
-You can set `GITHUB_TOKEN` explicitly in your environment:
+Set `GITHUB_TOKEN` explicitly in your environment to avoid GitHub REST API rate limits:
 
 ```bash
 export GITHUB_TOKEN=$(gh auth token)
@@ -29,7 +30,14 @@ export GITHUB_TOKEN="your_personal_access_token"
 #### Option A: Using `uv` (Recommended - Auto-installs dependencies)
 
 ```bash
+# Whiteboard visual thinking style (Default)
 uv run star_history.py google/skills
+
+# Dark theme style
+uv run star_history.py google/skills --theme dark
+
+# Demo mode (Offline test data)
+uv run star_history.py google/skills --demo
 ```
 
 #### Option B: Using standard Python
