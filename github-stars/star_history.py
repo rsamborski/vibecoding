@@ -171,7 +171,7 @@ def fetch_sampled_star_history(owner, repo, created_at, stargazers_count, header
 
     return unique_points, interval_desc
 
-def plot_star_history(repo_info, sampled_points, interval_desc, output_path, theme="whiteboard"):
+def plot_star_history(repo_info, sampled_points, interval_desc, output_path, theme="whiteboard", min_stars=0):
     """
     Generate a star history graph following either whiteboard hand-drawn style or dark theme.
     By default, uses the Whiteboard / Visual Thinking sketch style (devrel-social-images).
@@ -188,13 +188,26 @@ def plot_star_history(repo_info, sampled_points, interval_desc, output_path, the
     full_name = repo_info["full_name"]
     now = datetime.now(timezone.utc)
 
-    # Build timeline arrays starting from creation (0 stars) to present (total stars)
-    dates = [created_at]
-    counts = [0]
+    # Filter sampled points by min_stars threshold if specified
+    if min_stars > 0:
+        filtered_points = [p for p in sampled_points if p[1] >= min_stars]
+        if not filtered_points:
+            filtered_points = sampled_points
+    else:
+        filtered_points = sampled_points
 
-    for dt, count in sampled_points:
-        dates.append(dt)
-        counts.append(count)
+    if min_stars > 0 and filtered_points and filtered_points[0][1] >= min_stars:
+        start_dt = filtered_points[0][0]
+        dates = [p[0] for p in filtered_points]
+        counts = [p[1] for p in filtered_points]
+        start_desc = f"From {start_dt.strftime('%b %d, %Y')} (≥{min_stars} stars)"
+    else:
+        dates = [created_at]
+        counts = [0]
+        for dt, count in sampled_points:
+            dates.append(dt)
+            counts.append(count)
+        start_desc = f"From {created_at.strftime('%b %d, %Y')}"
 
     # Append current time and total stars
     if dates[-1] < now:
@@ -232,7 +245,7 @@ def plot_star_history(repo_info, sampled_points, interval_desc, output_path, the
 
             # Title & Subtitle styling
             fig.text(0.08, 0.93, full_name, color=text_dark, fontsize=22, fontweight="bold", ha="left")
-            subtitle_text = f"Star History • Created {created_at.strftime('%b %d, %Y')} • Sampled {interval_desc}"
+            subtitle_text = f"Star History • {start_desc} • Sampled {interval_desc}"
             fig.text(0.08, 0.88, subtitle_text, color=text_muted, fontsize=11, ha="left")
 
             # Star Count Highlight Badge (Top Right Header)
@@ -306,7 +319,7 @@ def plot_star_history(repo_info, sampled_points, interval_desc, output_path, the
 
         # Title & Subtitle styling
         fig.text(0.12, 0.92, full_name, color=text_white, fontsize=20, fontweight="bold", ha="left")
-        subtitle_text = f"Star History • Created {created_at.strftime('%b %d, %Y')} • Sampled {interval_desc}"
+        subtitle_text = f"Star History • {start_desc} • Sampled {interval_desc}"
         fig.text(0.12, 0.88, subtitle_text, color=text_muted, fontsize=11, ha="left")
 
         # Star Count Highlight Badge (Top Right)
@@ -397,6 +410,12 @@ def main():
         help="Visual theme style (default: whiteboard)",
     )
     parser.add_argument(
+        "--min-stars",
+        type=int,
+        default=0,
+        help="Ignore timeline before reaching a minimum star threshold (e.g. 10)",
+    )
+    parser.add_argument(
         "--demo",
         action="store_true",
         help="Generate graph using demo data without making GitHub API requests",
@@ -438,7 +457,7 @@ def main():
         )
 
     # 3. Render graph
-    plot_star_history(repo_info, sampled_points, interval_desc, output_path, theme=args.theme)
+    plot_star_history(repo_info, sampled_points, interval_desc, output_path, theme=args.theme, min_stars=args.min_stars)
 
 if __name__ == "__main__":
     main()
